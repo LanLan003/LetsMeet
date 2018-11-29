@@ -38,4 +38,7 @@ def get_name(request):
 
 def resultpage(request):
 	event = request.get_full_path()
+	current = Event.objects.get(randUrl=event)
+	dayChosen = current.dayChosen
+	dC = dayChosen.split(",",dayChosen.count(","))
 	return render(request, 'result.html',locals())
