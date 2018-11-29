@@ -25,69 +25,56 @@
         document.querySelector("#copy").addEventListener("click", copy);
 
         var width = window.innerWidth;
-    var height = window.innerHeight;
+        var height = window.innerHeight;
 
-    var stage = new Konva.Stage({
-        container: "container",
-        width: width,
-        height: height
-    });
-
-    var layer = new Konva.Layer();
-    var k = {{ dC|length }}
-    var freeDay = []
-    </script>
-
-<!-------------------------------------------------------------->
-  
-
-    <script>
-    var j = 0
-    {% for i in dC %}
-        var simpleText = new Konva.Text({
-            x: 145+j*80,
-          y: 240,
-            text: '{{ i }}',
-            fontSize: 30,
-            fontFamily: 'Calibri',
-            fill: 'black'
-        });
-        
-        simpleText.setOffset({
-            x: simpleText.getWidth() / 2
+        var stage_r = new Konva.Stage({
+            container: "container",
+            width: width,
+            height: height
         });
 
-        var rectangle = new Konva.Rect({
-            id: '{{ i }}',
-            x: 120+j*80,
-            y: 280,
-            width:50,
-            height:250,
-            fill: 'red',
-            stroke: 'black',
-            strokeWidth: 4
-        });
+        var layer_r = new Konva.Layer();
+        var text_X = [145, 225, 305, 385, 465, 545, 625]
+        var text = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        var rec_X = [120, 200, 280, 360, 440, 520, 600]
+        var dayChosen = []
 
-        rectangle.on('click', function() {
-            var fill = this.fill() == 'red' ? '#00d00f' : 'red';
-            this.fill(fill);
-            layer.draw();
-            if (this.fill() != 'red') {
-                freeDay.push(this.id());
-                // alert(text[this.id()])
-            } else {
-                var n = freeDay.indexOf(this.id());
-                freeDay.splice(n,1);
-            }
-        });
+        for (var i = 0; i < 7; i++) {
+            var simpleText_r = new Konva.Text({
+                x: text_X[i],
+                y: 240,
+                text: text[i],
+                fontSize: 30,
+                fontFamily: 'Calibri',
+                fill: 'black'
+            });
+            simpleText_r.setOffset({
+                x: simpleText_r.getWidth() / 2
+            });
 
-        layer.add(simpleText);
-        layer.add(rectangle);
-      j=j+1
-    {% endfor %} 
-    </script>
+            var rectangle_r = new Konva.Rect({
+                id: text[i],
+                x: rec_X[i],
+                y: 280,
+                width: 50,
+                height: 250,
+                fill: 'red',
+                stroke: 'black',
+                strokeWidth: 4
+            });
 
-    <script>
+            // rectangle.on('click', function() {
+            //     var fill = this.fill() == 'red' ? '#00d00f' : 'red';
+            //     this.fill(fill);
+            //     layer.draw();
+            //     if (this.fill() != 'red') {
+            //         dayChosen.push(this.id());
+            //         alert(this.id())
+            //     } else {
+            //         var n = dayChosen.indexOf(this.id());
+            //         dayChosen.splice(n, 1);
+            //     }
+            // });
             var rect = new Konva.Rect({
                 x: 335,
                 y: 170,
