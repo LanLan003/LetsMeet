@@ -1,0 +1,106 @@
+{% load  staticfiles %}
+<html>
+<head>
+  <script src="https://unpkg.com/konva@2.4.2/konva.min.js"></script>
+  <meta charset="utf-8">
+  <link href="{% static 'css/style.css' %}" rel="stylesheet" type="text/css"/>
+  <title>Let's meet !</title>
+</head>
+
+<body>
+  
+  <form action="." method="POST">
+		{% csrf_token %}
+    <input type="text" name="userName" value="User Name"/>
+    <input type="hidden" id="freeDay" name="freeDay" value="">
+    <input type="submit" value="Submit" onclick="send()"/>
+ 	</form>
+	<div id="container"></div>
+
+	<script>
+
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+
+    var stage = new Konva.Stage({
+        container: "container",
+        width: width,
+        height: height
+    });
+
+    var layer = new Konva.Layer();
+    var k = {{ dC|length }}
+    var freeDay = []
+	</script>
+
+<!-------------------------------------------------------------->
+  
+
+	<script>
+    var j = 0
+    {% for i in dC %}
+    	var simpleText = new Konva.Text({
+      		x: 145+j*80,
+          y: 240,
+      		text: '{{ i }}',
+      		fontSize: 30,
+      		fontFamily: 'Calibri',
+      		fill: 'black'
+    	});
+    	
+    	simpleText.setOffset({
+      		x: simpleText.getWidth() / 2
+    	});
+
+    	var rectangle = new Konva.Rect({
+        	id: '{{ i }}',
+        	x: 120+j*80,
+        	y: 280,
+        	width:50,
+        	height:250,
+        	fill: 'red',
+        	stroke: 'black',
+        	strokeWidth: 4
+    	});
+
+    	rectangle.on('click', function() {
+        	var fill = this.fill() == 'red' ? '#00d00f' : 'red';
+        	this.fill(fill);
+        	layer.draw();
+        	if (this.fill() != 'red') {
+          		freeDay.push(this.id());
+          		// alert(text[this.id()])
+        	} else {
+          		var n = freeDay.indexOf(this.id());
+          		freeDay.splice(n,1);
+        	}
+    	});
+
+    	layer.add(simpleText);
+    	layer.add(rectangle);
+      j=j+1
+    {% endfor %} 
+    </script>
+
+<!-------------------------------------------------------------->
+    
+    <script>
+    stage.add(layer);
+
+    function send() {
+      document.getElementById("freeDay").value = freeDay;
+    }
+
+    </script>
+
+
+
+  </script>
+
+
+
+
+
+
+</body>
+</html>
