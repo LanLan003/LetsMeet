@@ -29,20 +29,46 @@
     });
 
     var layer = new Konva.Layer();
-    var k = {{ dC|length }}
-    var freeDay = []
+
+    var dayArray=[
+      {Order:1, Day:'Mon'},
+      {Order:2, Day:'Tus'},
+      {Order:3, Day:'Wed'},
+      {Order:4, Day:'Thu'},
+      {Order:5, Day:'Fri'},
+      {Order:6, Day:'Sat'},
+      {Order:7, Day:'Sun'}];  //here
+    
+    //var dC=[];
+    //{% for d in dC %}
+    //  dC.push(parseInt({{ d }}));
+    //{% endfor %}
+    //alert(dC);
+
+    var show = [];
+    {% for d in dC %}
+      for(var i = 0; i < 7; i++) {
+        if (dayArray[i].Order == {{ d }}) {
+          show.push({Order: {{ d }}, Day: dayArray[i].Day});
+          break;
+        };
+      };
+    {% endfor %}
+    //alert(show);
+
+    var freeDay = [];
+    
 	</script>
 
 <!-------------------------------------------------------------->
   
-
 	<script>
-    var j = 0
-    {% for i in dC %}
+    var y = 0
+    for(var x = 0; x < show.length; x++) {
     	var simpleText = new Konva.Text({
-      		x: 145+j*80,
+      		x: 145+y*80,
           y: 240,
-      		text: '{{ i }}',
+      		text: show[x].Day,
       		fontSize: 30,
       		fontFamily: 'Calibri',
       		fill: 'black'
@@ -53,8 +79,8 @@
     	});
 
     	var rectangle = new Konva.Rect({
-        	id: '{{ i }}',
-        	x: 120+j*80,
+        	id: show[x].Order,
+        	x: 120+y*80,
         	y: 280,
         	width:50,
         	height:250,
@@ -68,18 +94,18 @@
         	this.fill(fill);
         	layer.draw();
         	if (this.fill() != 'red') {
-          		freeDay.push(this.id());
-          		// alert(text[this.id()])
+          		freeDay.push(parseInt(this.id()));  //here
+          		//alert(this.id())
         	} else {
-          		var n = freeDay.indexOf(this.id());
+          		var n = freeDay.indexOf(parseInt(this.id()));  //here
           		freeDay.splice(n,1);
         	}
     	});
 
     	layer.add(simpleText);
     	layer.add(rectangle);
-      j=j+1
-    {% endfor %} 
+      y=y+1
+    };
     </script>
 
 <!-------------------------------------------------------------->
@@ -88,6 +114,9 @@
     stage.add(layer);
 
     function send() {
+      freeDay.sort(function(a,b){
+        return a-b;
+      });
       document.getElementById("freeDay").value = freeDay;
     }
 

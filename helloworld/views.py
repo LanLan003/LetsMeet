@@ -37,5 +37,11 @@ def get_name(request):
 	return render(request, 'user.html',locals())
 
 def resultpage(request):
+	copy = request.build_absolute_uri()[0:-6]
 	event = request.get_full_path()
+	event = event[0:-6]
+	current = Event.objects.get(randUrl=event)
+	dayChosen = current.dayChosen
+	dC = dayChosen.split(",",dayChosen.count(","))
+	#return HttpResponse(dC)
 	return render(request, 'result.html',locals())

@@ -31,9 +31,17 @@
 
 
     var layer = new Konva.Layer();
-    var text_X = [145, 225, 305, 385, 465, 545, 625]
-    var text = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-    var rec_X = [120, 200, 280, 360, 440, 520, 600]
+    var text_X = [145, 225, 305, 385, 465, 545, 625];
+    //var text = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    var dayArray=[
+      {Order:1, Day:'Mon'},
+      {Order:2, Day:'Tus'},
+      {Order:3, Day:'Wed'},
+      {Order:4, Day:'Thu'},
+      {Order:5, Day:'Fri'},
+      {Order:6, Day:'Sat'},
+      {Order:7, Day:'Sun'}];  //here
+    var rec_X = [120, 200, 280, 360, 440, 520, 600];
 
     var dayChosen = []
 
@@ -42,7 +50,8 @@
     var simpleText = new Konva.Text({
       x: text_X[i],
       y: 240,
-      text: text[i],
+      //text: text[i],
+      text: dayArray[i].Day,
       fontSize: 30,
       fontFamily: 'Calibri',
       fill: 'black'
@@ -52,7 +61,8 @@
     });
 
      var rectangle = new Konva.Rect({
-        id: text[i],
+        //id: text[i],
+        id: dayArray[i].Order, //here
         x: rec_X[i],
         y: 280,
         width:50,
@@ -67,10 +77,10 @@
         this.fill(fill);
         layer.draw();
         if (this.fill() != 'red') {
-          dayChosen.push(this.id());
+          dayChosen.push(parseInt(this.id()));  //here
           //alert(this.id());
         } else {
-          var n = dayChosen.indexOf(this.id());
+          var n = dayChosen.indexOf(parseInt(this.id()));  //here
           dayChosen.splice(n,1);
         };
     });
@@ -98,6 +108,9 @@
     //});
 
     function send() {
+      dayChosen.sort(function(a,b){
+        return a-b;
+      });
       document.getElementById("dayChosen").value = dayChosen;
       document.getElementById("randUrl").value = randUrl;
     }
