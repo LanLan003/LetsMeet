@@ -56,12 +56,33 @@
 <!-------------------------------------------------------------->
     
   <script>
-    var y = 0
-    for(var x = 0; x < show.length; x++) {
+    var i = 0  //new
+    var j = 0
+    var color = [];
+
+    if ({{ maxNum }} <= 8) {
+      for (var c = 0; c <= {{ maxNum }}; c++) {
+        var s = 65 + (35/{{ maxNum }})*c
+        var l = 81 - (56/{{ maxNum }})*c
+        var hsl = 'hsl(124,'+ s +'%,'+ l +'%)'
+        color.push({id: c+1, Color: hsl})
+        //alert(color[c].Color)
+      };
+    } else {
+      for (var c = 0; c <= 8; c++) {
+        var s = 60 +  35/c
+        var l = 81 + 56/c
+        var hsl = 'hsl(124,'+ s +'%,'+ l +'%)'
+        color.push(hsl)
+      };
+    };
+
+    {% for c in counting %}
+    //for(var x = 0; x < show.length; x++) {
         var simpleText = new Konva.Text({
-            x: 145+y*80,
+            x: 145+j*80,
             y: 240,
-            text: show[x].Day,
+            text: show[i].Day,
             fontSize: 30,
             fontFamily: 'Calibri',
             fill: 'black'
@@ -72,33 +93,79 @@
         });
 
         var rectangle = new Konva.Rect({
-            id: show[x].Order,
-            x: 120+y*80,
+            id: show[i].Order,
+            x: 120+j*80,
             y: 280,
             width:50,
             height:250,
-            fill: 'red',
+            fill: color[{{ c }}].Color,
             stroke: 'black',
             strokeWidth: 4
         });
 
-        //rectangle.on('click', function() {
-        //    var fill = this.fill() == 'red' ? '#00d00f' : 'red';
-        //    this.fill(fill);
-        //    layer.draw();
-        //    if (this.fill() != 'red') {
-        //        freeDay.push(parseInt(this.id()));  //here
-        //        //alert(this.id())
-        //    } else {
-        //        var n = freeDay.indexOf(parseInt(this.id()));  //here
-        //        freeDay.splice(n,1);
-        //    }
-        //});
+        var countNum = new Konva.Text({
+            x: 135+j*80,
+            y: 380,
+            text: '{{ c }}',
+            fontSize: 40,
+            fontFamily: 'Calibri',
+            fill: 'white'
+        });
 
         layer.add(simpleText);
         layer.add(rectangle);
-      y=y+1
-    };
+        layer.add(countNum);
+      j++
+      i++
+    {% endfor %}
+    //};
+
+     var scaleMin = new Konva.Text({
+          x: 125,
+          y: 565,
+          text: '0/{{ reply }}',
+          fontSize: 20,
+          fontFamily: 'Calibri',
+          fill: 'black'
+        });
+
+     // 寫成for loop
+
+    var scale1 = new Konva.Rect({
+        x: 175,
+        y: 560,
+        width: 80,
+        height: 30,
+        fill: 'hsl(124,100%,81%)',
+    });
+
+    // 60,81 65,73 70,65 75,57 80,49 85,41 90,33 95,25 100,17
+
+    var scale2 = new Konva.Rect({
+        x: 255,
+        y: 560,
+        width: 80,
+        height: 30,
+        fill: 'hsl(124,100%,17%)',
+    });
+
+    //
+
+    var scaleMax = new Konva.Text({
+           x: 355,
+            y: 565,
+            text: '{{ maxNum }}/{{ reply }}',
+            fontSize: 20,
+            fontFamily: 'Calibri',
+            fill: 'black'
+        });
+
+    layer.add(scaleMin);
+    layer.add(scale1);
+    layer.add(scale2);
+    layer.add(scaleMax);
+
+
     </script>
 
     <script>

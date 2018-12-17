@@ -63,12 +63,12 @@
 <!-------------------------------------------------------------->
   
 	<script>
-    var y = 0
-    for(var x = 0; x < show.length; x++) {
+    var j = 0
+    for(var i = 0; i < show.length; i++) {
     	var simpleText = new Konva.Text({
-      		x: 145+y*80,
+      		x: 145+j*80,
           y: 240,
-      		text: show[x].Day,
+      		text: show[i].Day,
       		fontSize: 30,
       		fontFamily: 'Calibri',
       		fill: 'black'
@@ -79,8 +79,8 @@
     	});
 
     	var rectangle = new Konva.Rect({
-        	id: show[x].Order,
-        	x: 120+y*80,
+        	id: show[i].Order,
+        	x: 120+j*80,
         	y: 280,
         	width:50,
         	height:250,
@@ -104,7 +104,7 @@
 
     	layer.add(simpleText);
     	layer.add(rectangle);
-      y=y+1
+      j=j+1
     };
     </script>
 

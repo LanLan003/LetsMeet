@@ -3,13 +3,14 @@ from django.contrib.auth import authenticate
 from django.contrib import auth
 from django.http import HttpResponse
 from django.contrib.auth.models import User
-from event.models import Event, Respose
+from event.models import Event, Response
 
 
 def index(request):
-	error = False
+	#error = False
 	if request.GET:
 		eventName = request.GET.get('eventName')
+		owner = request.GET.get('owner')
 		dayChosen = request.GET.get('dayChosen')
 		randUrl = '/' + request.GET.get('randUrl') + '/'
 		#dC = dayChosen.split(",",dayChosen.count(","))
@@ -17,11 +18,10 @@ def index(request):
 		#if not eventName or not dayChosen:
 		#	error = True
 		#if not error:
-		Event.objects.create(eventName=eventName, dayChosen=dayChosen, randUrl=randUrl)
+		Event.objects.create(eventName=eventName, owner=owner, dayChosen=dayChosen, randUrl=randUrl)
 		return redirect(randUrl)
 		#return render(request, 'user.html')
 		#return HttpResponse('Done')
-
 	return render(request, 'week.html')
 
 def get_name(request):
@@ -32,7 +32,7 @@ def get_name(request):
 	if request.method == 'POST':
 		userName = request.POST.get('userName')
 		freeDay = request.POST.get('freeDay')
-		Respose.objects.create(userName=userName, freeDay=freeDay, event=current)
+		Response.objects.create(userName=userName, freeDay=freeDay, event=current)
 		return redirect(event+'result')
 	return render(request, 'user.html',locals())
 
@@ -43,5 +43,58 @@ def resultpage(request):
 	current = Event.objects.get(randUrl=event)
 	dayChosen = current.dayChosen
 	dC = dayChosen.split(",",dayChosen.count(","))
-	#return HttpResponse(dC)
+
+	results = Response.objects.filter(event=event)
+	fD = []
+	for i in range(len(results)):
+		userName = results[i].userName
+		freeDay = results[i].freeDay
+		f = freeDay.split(",",freeDay.count(","))
+		fD.append({userName:f})
+		#fD.extend(f)
+
+	# 計算星期幾出現幾次：
+	days = []
+	for d in fD:
+		a = list(d.values())
+		days.extend(a[0])
+	
+	counting = []
+	for i in dC:
+		counting.append(days.count(i))
+	
+	maxNum = max(counting)
+	scaleRange = range(maxNum)
+	reply = len(results)
+
+
+
+
+
+
+	#顯示每一天有多少人選：
+
+
+	#show = tuple()
+	#for d in fD:
+	#	show.insert(d,fD.count(d))
+	#	show[d] = show.get(d,0) + 1
+
+	#show = dict()
+	#for d in fD:
+	#	show[d] = show.get(d,0) + 1
+
+	#--------  我是笨蛋啦繞一圈回來做一樣的事ＱＱ --------#
+	# results = Response.objects.filter(event=event) #
+	# freeDay = []                                   #
+	# for i in range(len(results)):                  #
+	# 	free = results[i].freeDay                    #
+	# 	f = free.split(",",dayChosen.count(","))     #
+	# 	freeDay.extend(f)                            #
+	# freeDay.sort()                                 #
+	# setFreeDay = list(set(freeDay))                #
+	# setFreeDay.sort(key=freeDay.index)             #
+	#----------------- 笨蛋紀念區ＱＱ -----------------#
+
+	#return HttpResponse(reply)
 	return render(request, 'result.html',locals())
