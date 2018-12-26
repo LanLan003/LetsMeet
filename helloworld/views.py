@@ -22,19 +22,19 @@ def index(request):
 		return redirect(randUrl)
 		#return render(request, 'user.html')
 		#return HttpResponse('Done')
-	return render(request, 'week.html')
+	return render(request, 'week_try_daytime.html')
 
 def get_name(request):
 	event = request.get_full_path()
 	current = Event.objects.get(randUrl=event)
 	dayChosen = current.dayChosen
-	dC = dayChosen.split(",",dayChosen.count(","))
+	#dC = dayChosen.split(",",dayChosen.count(","))
 	if request.method == 'POST':
 		userName = request.POST.get('userName')
 		freeDay = request.POST.get('freeDay')
 		Response.objects.create(userName=userName, freeDay=freeDay, event=current)
 		return redirect(event+'result')
-	return render(request, 'user.html',locals())
+	return render(request, 'user_try_daytime.html',locals())
 
 def resultpage(request):
 	copy = request.build_absolute_uri()[0:-6]
