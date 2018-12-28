@@ -19,7 +19,7 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index),
-    re_path('user/[-\w]+/$', views.get_name),  #
+    path('', views.createEvent),
+    re_path('user/[-\w]+/$', views.newEvent),  #
     re_path('user/[-\w]+/result', views.resultpage, name='resulturl')  #
 ]

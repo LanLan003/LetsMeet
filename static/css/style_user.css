@@ -1,0 +1,32 @@
+/* Button Style */
+
+  #selectable li { 
+    margin: 0.5px 3px;
+    padding: 11px;
+    font-size: 22px;
+    width: 80px; 
+    display: inline-block; 
+    background: #FF6666; 
+    color: #262626; 
+    border: dashed; 
+    border-width: 1px; 
+    text-align: center;
+    cursor: pointer;
+    /* line-height: 120px; */
+  }
+
+  #selectable .ui-selecting { 
+    background: #AEEAAE; 
+  }
+
+  #selectable .ui-selected { 
+    background: #5DD55D; 
+    color: white; 
+  }
+  
+  #selectable { 
+    list-style-type: none; 
+    margin: 20px 50px 80px 50px; 
+    padding: 0; 
+    width: 70%; 
+  }

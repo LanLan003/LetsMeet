@@ -6,51 +6,57 @@ from django.contrib.auth.models import User
 from event.models import Event, Response
 
 
-def index(request):
+def createEvent(request):
 	#error = False
 	if request.GET:
 		eventName = request.GET.get('eventName')
 		owner = request.GET.get('owner')
 		dayChosen = request.GET.get('dayChosen')
+		timeChosen = request.GET.get('timeChosen')
 		randUrl = '/' + request.GET.get('randUrl') + '/'
-		#dC = dayChosen.split(",",dayChosen.count(","))
-		#k = len(dC)
 		#if not eventName or not dayChosen:
 		#	error = True
 		#if not error:
-		Event.objects.create(eventName=eventName, owner=owner, dayChosen=dayChosen, randUrl=randUrl)
+		Event.objects.create(eventName=eventName, owner=owner, dayChosen=dayChosen, timeChosen=timeChosen, randUrl=randUrl)
 		return redirect(randUrl)
-		#return render(request, 'user.html')
-		#return HttpResponse('Done')
-	return render(request, 'week_try_daytime.html')
+	return render(request, 'week.html')
 
-def get_name(request):
-	event = request.get_full_path()
-	current = Event.objects.get(randUrl=event)
-	dayChosen = current.dayChosen
-	#dC = dayChosen.split(",",dayChosen.count(","))
+
+
+def newEvent(request):
+	current = request.get_full_path()
+	event = Event.objects.get(randUrl=current)
+	eventName = event.eventName
+	dC = event.dayChosen
+	dayChosen = dC.split(",",dC.count(","))
+	tC = event.timeChosen
+	timeChosen = tC.split(",",tC.count(","))
 	if request.method == 'POST':
-		userName = request.POST.get('userName')
+		yourName = request.POST.get('yourName')
 		freeDay = request.POST.get('freeDay')
-		Response.objects.create(userName=userName, freeDay=freeDay, event=current)
-		return redirect(event+'result')
+		Response.objects.create(yourName=yourName, freeDay=freeDay, event=event)
+		return redirect(current+'result')
 	return render(request, 'user_try_daytime.html',locals())
+
+
 
 def resultpage(request):
 	copy = request.build_absolute_uri()[0:-6]
-	event = request.get_full_path()
-	event = event[0:-6]
-	current = Event.objects.get(randUrl=event)
-	dayChosen = current.dayChosen
-	dC = dayChosen.split(",",dayChosen.count(","))
-
+	current = request.get_full_path()
+	current = current[0:-6]
+	event = Event.objects.get(randUrl=current)
+	eventName = event.eventName
+	dC = event.dayChosen
+	dayChosen = dC.split(",",dC.count(","))
+	tC = event.timeChosen
+	timeChosen = tC.split(",",tC.count(","))
 	results = Response.objects.filter(event=event)
 	fD = []
 	for i in range(len(results)):
-		userName = results[i].userName
+		yourName = results[i].yourName
 		freeDay = results[i].freeDay
 		f = freeDay.split(",",freeDay.count(","))
-		fD.append({userName:f})
+		fD.append({yourName:f})
 		#fD.extend(f)
 
 	# 計算星期幾出現幾次：
@@ -97,4 +103,4 @@ def resultpage(request):
 	#----------------- 笨蛋紀念區ＱＱ -----------------#
 
 	#return HttpResponse(reply)
-	return render(request, 'result.html',locals())
+	return render(request, 'result_try.html',locals())

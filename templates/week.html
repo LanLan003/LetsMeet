@@ -1,120 +1,85 @@
 {% load  staticfiles %}
 <html>
 <head>
-  <script src="https://unpkg.com/konva@2.4.2/konva.min.js"></script>
+  <!--<script src="https://unpkg.com/konva@2.4.2/konva.min.js"></script>-->
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <meta charset="utf-8">
-  <link href="{% static 'css/style.css' %}" rel="stylesheet" type="text/css" />
+  <link href="{% static 'css/style.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/style_week.css' %}" rel="stylesheet" type="text/css">
   <title>Let's meet !</title>
 </head>
 
 <body>
-
   <form action="." method="get" id="myform">
-    <input type="text" name="eventName" value="New Event" id="eventName">
-    create by:<input type="text" name="owner" value="Event Owner" id="owner">
+    <input type="text" name="eventName" placeholder="New Event" id="eventName">
+    <span class="textContent">create by:</span><input type="text" name="owner" placeholder="Event Owner" id="owner">
+
+    <ol id="selectable">
+      <li id="Mon">Mon</li>  <!--class="ui-widget-content"-->
+      <li id="Tue">Tue</li>
+      <li id="Wed">Wed</li>
+      <li id="Thu">Thu</li>
+      <li id="Fri">Fri</li>
+      <li id="Sat">Sat</li>
+      <li id="Sun">Sun</li>
+    </ol>
+
+    <span id="amount" class="textContent"></span>
     <input type="hidden" name="dayChosen" value="" id="dayChosen">
+    <input type="hidden" name="timeChosen" value="" id="timeChosen">
     <input type="hidden" name="randUrl" value="" id="randUrl">
-    <input type="submit" value="Click me" onclick="send()">
+    <input type="submit" value="Click me" id="submit">  <!--onclick="send()"-->
+    <div id="slider-range"></div>
   </form>
-  <div id="container"></div>
+
   <script>
-
-    var width = 2*window.innerWidth/3;
-    var height = 2*window.innerHeight/3;
-
-    var stage = new Konva.Stage({
-        container: 'container',
-        width: width,
-        height: height
+  
+  // Create Selectable Button//
+  $( function() {
+    $( "#selectable" ).bind("mousedown", function(evt) {
+    evt.metaKey = true;
+    }).selectable({
+      stop: function() {
+        var dayChosen = [];
+        $( ".ui-selected" , this ).each(function() {
+          var id = $( this ).attr('id')
+          dayChosen.push( id );
+          $( "#dayChosen" )[0].value = dayChosen;
+        });
+      }
     });
+  } );
 
-    var layer = new Konva.Layer();
-
-
-    var layer = new Konva.Layer();
-    var text_X = [125, 205, 285, 365, 445, 525, 605];
-    //var text = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    var dayArray=[
-      {Order:1, Day:'Mon'},
-      {Order:2, Day:'Tus'},
-      {Order:3, Day:'Wed'},
-      {Order:4, Day:'Thu'},
-      {Order:5, Day:'Fri'},
-      {Order:6, Day:'Sat'},
-      {Order:7, Day:'Sun'}];  //here
-    var rec_X = [100, 180, 260, 340, 420, 500, 580];
-
-    var dayChosen = []
-
-///////////////////////////////
-  for(var i = 0; i < 7; i++) {
-    var simpleText = new Konva.Text({
-      x: text_X[i],
-      y: 120,
-      //text: text[i],
-      text: dayArray[i].Day,
-      fontSize: 30,
-      fontFamily: 'Calibri',
-      fill: 'black'
-    });
-    simpleText.setOffset({
-      x: simpleText.getWidth() / 2
-    });
-
-     var rectangle = new Konva.Rect({
-        //id: text[i],
-        id: dayArray[i].Order, //here
-        x: rec_X[i],
-        y: 160,
-        width:50,
-        height:250,
-        fill: 'red',
-        stroke: 'black',
-        strokeWidth: 4
-    });
-
-    rectangle.on('click', function() {
-        var fill = this.fill() == 'red' ? '#00d00f' : 'red';
-        this.fill(fill);
-        layer.draw();
-        if (this.fill() != 'red') {
-          dayChosen.push(parseInt(this.id()));  //here
-          //alert(this.id());
-        } else {
-          var n = dayChosen.indexOf(parseInt(this.id()));  //here
-          dayChosen.splice(n,1);
+  // Create Slider //
+  $( function() {
+    $( "#slider-range" ).slider({
+      range: true,
+      min: 0,
+      max: 24,
+      values: [ 9, 17 ],
+      slide: function( event, ui ) {
+        var timeChosen = [];
+        $( "#amount" ).text( ui.values[ 0 ] + ":00 - " + ui.values[ 1 ] + ":00" );
+        for (var hour = ui.values[ 0 ]; hour <= ui.values[ 1 ]; hour++) {
+          timeChosen.push( hour + ":00" );
         };
+        $( "#timeChosen" )[0].value = timeChosen;
+      }
     });
+    $( "#amount" ).text( $( "#slider-range" ).slider( "values", 0 ) +
+      ":00 - " + $( "#slider-range" ).slider( "values", 1 ) + ":00" );
+  } );
 
-    layer.add(simpleText);
-    layer.add(rectangle);
-  }
-/////////////////////////////////////////
-    stage.add(layer);
-
-    //function makeid() {
-      var randUrl = "user/";
-      var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-      for (var i = 0; i < 10; i++)
-          randUrl += possible.charAt(Math.floor(Math.random() * possible.length));
-      //return text;
-    //}
-
-    //var myForm = document.getElementById('myform');
-    //myForm.addEventListener('submit', function(event) {
-      //var randUrl = 'user/'+ makeid();
-      //event.preventDefault();
-      //myForm.action = randUrl;
-      //myform.submit();
-    //});
-
-    function send() {
-      dayChosen.sort(function(a,b){
-        return a-b;
-      });
-      document.getElementById("dayChosen").value = dayChosen;
-      document.getElementById("randUrl").value = randUrl;
-    }
+  // Generate Random URL //
+    var randUrl = "user/";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    for (var i = 0; i < 10; i++) {
+      randUrl += possible.charAt(Math.floor(Math.random() * possible.length));
+    };
+    
+    //document.getElementById("randUrl").value = randUrl;  /** 要加[0]才會一樣！ **/
+    $( "#randUrl" )[0].value = randUrl
 
   </script>
 
