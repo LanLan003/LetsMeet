@@ -11,22 +11,27 @@
     border: dashed; 
     border-width: 1px; 
     text-align: center;
-    cursor: pointer;
-    /* line-height: 120px; */
+    /*cursor: pointer;*/
+    /*line-height: 120px; */
   }
 
-  #selectable .ui-selecting { 
-    background: #AEEAAE; 
-  }
-
-  #selectable .ui-selected { 
-    background: #5DD55D; 
-    color: white; 
-  }
-  
   #selectable { 
     list-style-type: none; 
     margin: 20px 50px 80px 50px; 
     padding: 0; 
     width: 70%; 
   }
+
+
+#copy {
+    z-index: 2;
+    background-color: #A9A9A9;
+    border: none;
+    color: white;
+    padding: 12px 32px;
+    text-decoration: none;
+    margin: 42px 0px 48px 0px;
+    cursor: pointer;
+    top: 3%;
+    /*left: 65%;*/
+}

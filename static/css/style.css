@@ -10,13 +10,6 @@ span.textContent {
     padding-left: 48px;
 }
 
-#event {
-    font-size: 28px;
-    font-weight: bolder;
-    padding: 4px 8px;
-    margin: 0px 108px 48px 0px;
-}
-
 input[type=text] {
     z-index: 2;
     font-size: 24px;
@@ -46,18 +39,9 @@ input[type=submit] {
     left: 70%;
 }
 
-#copy {
-    z-index: 2;
-    background-color: #A9A9A9;
-    border: none;
-    color: white;
-    padding: 12px 32px;
-    text-decoration: none;
-    margin: 4px 2px;
-    cursor: pointer;
-    position: absolute;
-    top: 17px;
-    left: 250px;
-}
-
-  
+#event {
+    font-size: 28px;
+    font-weight: bolder;
+    padding: 4px 8px;
+    margin: 0px 108px 48px 0px;
+} 

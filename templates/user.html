@@ -1,135 +1,54 @@
 {% load  staticfiles %}
 <html>
 <head>
-  <script src="https://unpkg.com/konva@2.4.2/konva.min.js"></script>
+  <!--<script src="https://unpkg.com/konva@2.4.2/konva.min.js"></script>-->
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <meta charset="utf-8">
-  <link href="{% static 'css/style.css' %}" rel="stylesheet" type="text/css"/>
+  <link href="{% static 'css/style.css' %}" rel="stylesheet" type="text/css" />
+  <link href="{% static 'css/style_user.css' %}" rel="stylesheet" type="text/css" />
   <title>Let's meet !</title>
 </head>
 
 <body>
-  
-  <form action="." method="POST">
-		{% csrf_token %}
-    <input type="text" name="userName" value="User Name"/>
-    <input type="hidden" id="freeDay" name="freeDay" value="">
-    <input type="submit" value="Submit" onclick="send()"/>
+  	<span id="event" class="textContent">{{ eventName }}</span>
+
+  	<form action="." method="POST">
+	  {% csrf_token %}
+      <input type="text" name="yourName" placeholder="Your Name"/>
+      
+      <ol id="selectable">
+      {% for h in timeChosen%}
+  	  {% for d in dayChosen%}
+        <li id="{{ d }} : {{ h }}">{{ d }}<br>{{ h }}</li>
+      {% endfor %}
+        <br>
+      {% endfor %}
+      </ol>
+
+      <input type="hidden" id="freeDay" name="freeDay" value="">
+      <input type="submit" value="Submit"/>
  	</form>
-	<div id="container"></div>
+  	
 
-	<script>
-
-    var width = window.innerWidth;
-    var height = window.innerHeight;
-
-    var stage = new Konva.Stage({
-        container: "container",
-        width: width,
-        height: height
-    });
-
-    var layer = new Konva.Layer();
-
-    var dayArray=[
-      {Order:1, Day:'Mon'},
-      {Order:2, Day:'Tus'},
-      {Order:3, Day:'Wed'},
-      {Order:4, Day:'Thu'},
-      {Order:5, Day:'Fri'},
-      {Order:6, Day:'Sat'},
-      {Order:7, Day:'Sun'}];  //here
-    
-    //var dC=[];
-    //{% for d in dC %}
-    //  dC.push(parseInt({{ d }}));
-    //{% endfor %}
-    //alert(dC);
-
-    var show = [];
-    {% for d in dC %}
-      for(var i = 0; i < 7; i++) {
-        if (dayArray[i].Order == {{ d }}) {
-          show.push({Order: {{ d }}, Day: dayArray[i].Day});
-          break;
-        };
-      };
-    {% endfor %}
-    //alert(show);
-
-    var freeDay = [];
-    
-	</script>
-
-<!-------------------------------------------------------------->
+  <script>
   
-	<script>
-    var j = 0
-    for(var i = 0; i < show.length; i++) {
-    	var simpleText = new Konva.Text({
-      		x: 145+j*80,
-          y: 240,
-      		text: show[i].Day,
-      		fontSize: 30,
-      		fontFamily: 'Calibri',
-      		fill: 'black'
-    	});
-    	
-    	simpleText.setOffset({
-      		x: simpleText.getWidth() / 2
-    	});
-
-    	var rectangle = new Konva.Rect({
-        	id: show[i].Order,
-        	x: 120+j*80,
-        	y: 280,
-        	width:50,
-        	height:250,
-        	fill: 'red',
-        	stroke: 'black',
-        	strokeWidth: 4
-    	});
-
-    	rectangle.on('click', function() {
-        	var fill = this.fill() == 'red' ? '#00d00f' : 'red';
-        	this.fill(fill);
-        	layer.draw();
-        	if (this.fill() != 'red') {
-          		freeDay.push(parseInt(this.id()));  //here
-          		//alert(this.id())
-        	} else {
-          		var n = freeDay.indexOf(parseInt(this.id()));  //here
-          		freeDay.splice(n,1);
-        	}
-    	});
-
-    	layer.add(simpleText);
-    	layer.add(rectangle);
-      j=j+1
-    };
-    </script>
-
-<!-------------------------------------------------------------->
-    
-    <script>
-    stage.add(layer);
-
-    function send() {
-      freeDay.sort(function(a,b){
-        return a-b;
-      });
-      document.getElementById("freeDay").value = freeDay;
-    }
-
-    </script>
-
-
+  // Create Selectable Button//
+  $( function() {
+    $( "#selectable" ).bind("mousedown", function(evt) {
+    evt.metaKey = true;
+    }).selectable({
+      stop: function() {
+        var freeDay = [];
+        $( ".ui-selected" , this ).each(function() {
+          var id = $( this ).attr('id');
+          freeDay.push( id );
+          $( "#freeDay" )[0].value = freeDay;
+        });
+      }
+    });
+  } );
 
   </script>
-
-
-
-
-
-
 </body>
 </html>

@@ -1,177 +1,48 @@
-{% load staticfiles %}
+{% load  staticfiles %}
 <html>
 <head>
-  <script src="https://unpkg.com/konva@2.4.2/konva.min.js"></script>
+  <!--<script src="https://unpkg.com/konva@2.4.2/konva.min.js"></script>-->
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <meta charset="utf-8">
   <link href="{% static 'css/style.css' %}" rel="stylesheet" type="text/css" />
+  <link href="{% static 'css/style_result.css' %}" rel="stylesheet" type="text/css" />
   <title>Let's meet !</title>
 </head>
 
 <body>
+  	<span id="event" class="textContent">{{ eventName }}</span><br>
 
-  <input id="input" type="text" / value='{{ copy }}'>
-  <button id="copy">Copy</button>
-  <div id="container"></div>
+    <input id="input" type="text" / value='{{ copy }}'>
+    <button id="copy">Copy</button>
+      
+      <ol id="selectable">
+      {% for h in timeChosen%}
+  	  {% for d in dayChosen%}
+        <li id="{{ d }} : {{ h }}">{{ d }}<br>{{ h }}</li>
+      {% endfor %}
+        <br>
+      {% endfor %}
+      </ol>
 
   <script>
-    function copy() {
-      var copyText = document.querySelector("#input");
-      copyText.select();
-      document.execCommand("copy");
-    };
-    document.querySelector("#copy").addEventListener("click", copy);
-
-    var width = window.innerWidth;
-    var height = window.innerHeight;
-
-    var stage = new Konva.Stage({
-        container: "container",
-        width: width,
-        height: height
+  
+  // Create Selectable Button//
+  $( function() {
+    $( "#selectable" ).bind("mousedown", function(evt) {
+    evt.metaKey = true;
+    }).selectable({
+      stop: function() {
+        //var freeDay = [];
+        $( ".ui-selected" , this ).each(function() {
+          var id = $( this ).attr('id');
+          //freeDay.push( id );
+          $( "#freeDay" )[0].value = freeDay;
+        });
+      }
     });
-
-    var layer = new Konva.Layer();
-        
-    var dayArray=[
-        {Order:1, Day:'Mon'},
-        {Order:2, Day:'Tus'},
-        {Order:3, Day:'Wed'},
-        {Order:4, Day:'Thu'},
-        {Order:5, Day:'Fri'},
-        {Order:6, Day:'Sat'},
-        {Order:7, Day:'Sun'}];  //here
-
-    var show = [];
-    {% for d in dC %}
-      for(var i = 0; i < 7; i++) {
-        if (dayArray[i].Order == {{ d }}) {
-          show.push({Order: {{ d }}, Day: dayArray[i].Day});
-          break;
-        };
-      };
-    {% endfor %}
+  } );
 
   </script>
-
-<!-------------------------------------------------------------->
-    
-  <script>
-    var i = 0  //new
-    var j = 0
-    var color = [];
-
-    if ({{ maxNum }} <= 8) {
-      for (var c = 0; c <= {{ maxNum }}; c++) {
-        var s = 65 + (35/{{ maxNum }})*c
-        var l = 81 - (56/{{ maxNum }})*c
-        var hsl = 'hsl(124,'+ s +'%,'+ l +'%)'
-        color.push({id: c+1, Color: hsl})
-        //alert(color[c].Color)
-      };
-    } else {
-      for (var c = 0; c <= 8; c++) {
-        var s = 60 +  35/c
-        var l = 81 + 56/c
-        var hsl = 'hsl(124,'+ s +'%,'+ l +'%)'
-        color.push(hsl)
-      };
-    };
-
-    {% for c in counting %}
-    //for(var x = 0; x < show.length; x++) {
-        var simpleText = new Konva.Text({
-            x: 145+j*80,
-            y: 240,
-            text: show[i].Day,
-            fontSize: 30,
-            fontFamily: 'Calibri',
-            fill: 'black'
-        });
-        
-        simpleText.setOffset({
-            x: simpleText.getWidth() / 2
-        });
-
-        var rectangle = new Konva.Rect({
-            id: show[i].Order,
-            x: 120+j*80,
-            y: 280,
-            width:50,
-            height:250,
-            fill: color[{{ c }}].Color,
-            stroke: 'black',
-            strokeWidth: 4
-        });
-
-        var countNum = new Konva.Text({
-            x: 135+j*80,
-            y: 380,
-            text: '{{ c }}',
-            fontSize: 40,
-            fontFamily: 'Calibri',
-            fill: 'white'
-        });
-
-        layer.add(simpleText);
-        layer.add(rectangle);
-        layer.add(countNum);
-      j++
-      i++
-    {% endfor %}
-    //};
-
-     var scaleMin = new Konva.Text({
-          x: 125,
-          y: 565,
-          text: '0/{{ reply }}',
-          fontSize: 20,
-          fontFamily: 'Calibri',
-          fill: 'black'
-        });
-
-     // 寫成for loop
-
-    var scale1 = new Konva.Rect({
-        x: 175,
-        y: 560,
-        width: 80,
-        height: 30,
-        fill: 'hsl(124,100%,81%)',
-    });
-
-    // 60,81 65,73 70,65 75,57 80,49 85,41 90,33 95,25 100,17
-
-    var scale2 = new Konva.Rect({
-        x: 255,
-        y: 560,
-        width: 80,
-        height: 30,
-        fill: 'hsl(124,100%,17%)',
-    });
-
-    //
-
-    var scaleMax = new Konva.Text({
-           x: 355,
-            y: 565,
-            text: '{{ maxNum }}/{{ reply }}',
-            fontSize: 20,
-            fontFamily: 'Calibri',
-            fill: 'black'
-        });
-
-    layer.add(scaleMin);
-    layer.add(scale1);
-    layer.add(scale2);
-    layer.add(scaleMax);
-
-
-    </script>
-
-    <script>
-      stage.add(layer);
-    </script>
-
 </body>
-
 </html>

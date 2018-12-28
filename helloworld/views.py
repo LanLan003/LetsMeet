@@ -36,7 +36,7 @@ def newEvent(request):
 		freeDay = request.POST.get('freeDay')
 		Response.objects.create(yourName=yourName, freeDay=freeDay, event=event)
 		return redirect(current+'result')
-	return render(request, 'user_try_daytime.html',locals())
+	return render(request, 'user.html',locals())
 
 
 
@@ -103,4 +103,4 @@ def resultpage(request):
 	#----------------- 笨蛋紀念區ＱＱ -----------------#
 
 	#return HttpResponse(reply)
-	return render(request, 'result_try.html',locals())
+	return render(request, 'result.html',locals())
