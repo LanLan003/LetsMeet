@@ -16,8 +16,8 @@ class Event(models.Model):
 
 class Response(models.Model):
 	yourName = models.CharField(max_length=32, blank=False)
-	freeDay = models.CharField(max_length=1024, blank=False)
+	freeTime = models.CharField(max_length=1024, blank=False)
 	event = models.ForeignKey('Event', on_delete=models.CASCADE)
 
 	def __str__(self):
-		return self.yourName + ':' + self.freeDay
+		return self.yourName + ':' + self.freeTime

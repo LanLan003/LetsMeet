@@ -26,7 +26,7 @@
       {% endfor %}
       </ol>
 
-      <input type="hidden" id="freeDay" name="freeDay" value="">
+      <input type="hidden" id="freeTime" name="freeTime" value="">
       <input type="submit" value="Submit"/>
  	</form>
   	
@@ -39,11 +39,11 @@
     evt.metaKey = true;
     }).selectable({
       stop: function() {
-        var freeDay = [];
+        var freeTime = [];
         $( ".ui-selected" , this ).each(function() {
           var id = $( this ).attr('id');
-          freeDay.push( id );
-          $( "#freeDay" )[0].value = freeDay;
+          freeTime.push( id );
+          $( "#freeTime" )[0].value = freeTime;
         });
       }
     });

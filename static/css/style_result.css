@@ -11,7 +11,8 @@
     border: dashed; 
     border-width: 1px; 
     text-align: center;
-    /*cursor: pointer;*/
+    cursor: default;
+    border-color: #262626;
     /*line-height: 120px; */
   }
 
@@ -19,7 +20,8 @@
     list-style-type: none; 
     margin: 20px 50px 80px 50px; 
     padding: 0; 
-    width: 70%; 
+    width: 70%;
+    -webkit-user-select: none; 
   }
 
 
@@ -29,9 +31,14 @@
     border: none;
     color: white;
     padding: 12px 32px;
-    text-decoration: none;
+    /*text-decoration: none;*/
     margin: 42px 0px 48px 0px;
     cursor: pointer;
     top: 3%;
     /*left: 65%;*/
+}
+
+#scale .scaleRange {
+    height: 5px;
+    -webkit-user-select: none;
 }

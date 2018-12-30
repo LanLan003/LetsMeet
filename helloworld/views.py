@@ -27,14 +27,16 @@ def newEvent(request):
 	current = request.get_full_path()
 	event = Event.objects.get(randUrl=current)
 	eventName = event.eventName
+
 	dC = event.dayChosen
 	dayChosen = dC.split(",",dC.count(","))
 	tC = event.timeChosen
 	timeChosen = tC.split(",",tC.count(","))
+
 	if request.method == 'POST':
 		yourName = request.POST.get('yourName')
-		freeDay = request.POST.get('freeDay')
-		Response.objects.create(yourName=yourName, freeDay=freeDay, event=event)
+		freeTime = request.POST.get('freeTime')
+		Response.objects.create(yourName=yourName, freeTime=freeTime, event=event)
 		return redirect(current+'result')
 	return render(request, 'user.html',locals())
 
@@ -46,61 +48,42 @@ def resultpage(request):
 	current = current[0:-6]
 	event = Event.objects.get(randUrl=current)
 	eventName = event.eventName
+
 	dC = event.dayChosen
 	dayChosen = dC.split(",",dC.count(","))
 	tC = event.timeChosen
 	timeChosen = tC.split(",",tC.count(","))
+	
+	options = []
+	for h in timeChosen:
+		for d in dayChosen:
+			options.append(d + " : " + h)
+	lo = len(options)
+
 	results = Response.objects.filter(event=event)
-	fD = []
+	
+	fT = []
 	for i in range(len(results)):
 		yourName = results[i].yourName
-		freeDay = results[i].freeDay
-		f = freeDay.split(",",freeDay.count(","))
-		fD.append({yourName:f})
+		f = results[i].freeTime
+		freeTime = f.split(",",f.count(","))
+		fT.append({yourName:freeTime})
 		#fD.extend(f)
 
 	# 計算星期幾出現幾次：
-	days = []
-	for d in fD:
-		a = list(d.values())
-		days.extend(a[0])
+	times = []
+	for t in fT:
+		a = list(t.values())
+		times.extend(a[0])
 	
 	counting = []
-	for i in dC:
-		counting.append(days.count(i))
+	for i in options:
+		counting.append(times.count(i))
 	
 	maxNum = max(counting)
 	scaleRange = range(maxNum)
 	reply = len(results)
 
 
-
-
-
-
-	#顯示每一天有多少人選：
-
-
-	#show = tuple()
-	#for d in fD:
-	#	show.insert(d,fD.count(d))
-	#	show[d] = show.get(d,0) + 1
-
-	#show = dict()
-	#for d in fD:
-	#	show[d] = show.get(d,0) + 1
-
-	#--------  我是笨蛋啦繞一圈回來做一樣的事ＱＱ --------#
-	# results = Response.objects.filter(event=event) #
-	# freeDay = []                                   #
-	# for i in range(len(results)):                  #
-	# 	free = results[i].freeDay                    #
-	# 	f = free.split(",",dayChosen.count(","))     #
-	# 	freeDay.extend(f)                            #
-	# freeDay.sort()                                 #
-	# setFreeDay = list(set(freeDay))                #
-	# setFreeDay.sort(key=freeDay.index)             #
-	#----------------- 笨蛋紀念區ＱＱ -----------------#
-
-	#return HttpResponse(reply)
-	return render(request, 'result.html',locals())
+	#return HttpResponse(options)
+	return render(request, 'result_try.html',locals())
