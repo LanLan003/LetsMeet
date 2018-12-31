@@ -11,18 +11,23 @@
 </head>
 
 <body>
-  	<span id="event" class="textContent">{{ eventName }}</span><br>
+    <span id="event" class="textContent">{{ eventName }}</span><br>
 
     <input id="input" type="text" / value='{{ copy }}'>
     <button id="copy">Copy</button>
-      
+
       <ol id="selectable">
-      {% for h in timeChosen %}
-  	  {% for d in dayChosen %}
-        <li id="{{ d }} : {{ h }}">{{ d }}<br>{{ h }}</li>
-      {% endfor %}
-        <br>
-      {% endfor %}
+        <script>
+        var c = 0
+        {% for h in timeChosen %}
+        {% for d in dayChosen %}
+          var cn = {{ counting }}
+          $( "#selectable" ).append("<li id='{{ d }} : {{ h }}' class='show c" + cn[c] + "''>{{ d }}<br>{{ h }}</li>");
+          c++;
+        {% endfor %}
+          $( "#selectable" ).append("<br>");
+        {% endfor %}
+        </script>
       </ol>
 
     <div>
@@ -30,7 +35,7 @@
       <div id="scale" style="display: inline-block;">
         <script>
           for (var i = 0; i <= {{ maxNum }}; i++) {
-            var scaleRange = "<span class='scaleRange c"+ i +"' style='height: 5px; padding: 0px " + 80/({{ maxNum }}+1) + "px;'></span>"
+            var scaleRange = "<span class='scaleRange c"+ i +"' style='height: 5px; padding: 0px " + 100/({{ maxNum }}+1) + "px;'></span>"
             $( "#scale" ).append(scaleRange);
           };
 
@@ -39,10 +44,21 @@
             var l = 90 - (70/{{ maxNum }})*i
             var hsl = "hsl(120, " + s + "%, " + l + "%)"
             $( ".c"+i ).css('background',hsl);
-          };
 
-          {% for c in counting %}
-          {% endfor %}
+            if (i == {{ maxNum }}) {
+              $( ".show.c"+i ).css('color','white');
+              $( ".show.c"+i ).css('border','2px white dashed');
+              //$( ".c"+i ).css('border-width', '');
+              $( ".show.c"+i ).css('margin', '0.5px 2px');
+              $( ".show.c"+i ).css('font-weight','600');
+            } else if (i > 3*{{ maxNum }}/4) {
+              $( ".show.c"+i ).css('color','white');
+              $( ".show.c"+i ).css('font-weight','300');
+            };
+
+
+
+          };
         </script>
         
       </div>

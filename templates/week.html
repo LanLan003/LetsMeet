@@ -59,8 +59,8 @@
       max: 24,
       values: [ 9, 17 ],
       slide: function( event, ui ) {
-        var timeChosen = [];
         $( "#amount" ).text( ui.values[ 0 ] + ":00 - " + ui.values[ 1 ] + ":00" );
+        var timeChosen = [];
         for (var hour = ui.values[ 0 ]; hour <= ui.values[ 1 ]; hour++) {
           timeChosen.push( hour + ":00" );
         };
@@ -69,6 +69,22 @@
     });
     $( "#amount" ).text( $( "#slider-range" ).slider( "values", 0 ) +
       ":00 - " + $( "#slider-range" ).slider( "values", 1 ) + ":00" );
+    if ($( "#timeChosen" )[0].value == "") {
+      var timeChosen = [];
+      for (var hour = $( "#slider-range" ).slider( "values", 0 ); hour <= $( "#slider-range" ).slider( "values", 1 ); hour++) {
+        timeChosen.push( hour + ":00" );
+      };
+      $( "#timeChosen" )[0].value = timeChosen;
+    };
+  } );
+
+  // Create Slider //
+  $( function() {
+    $( "#submit" ).bind("mousedown", function(evt) {
+      if ($( "#dayChosen" )[0].value == "") {
+        alert("記得選填時間喔！");
+      };
+    })
   } );
 
   // Generate Random URL //

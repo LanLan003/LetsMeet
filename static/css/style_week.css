@@ -29,7 +29,8 @@
     list-style-type: none; 
     margin: 20px 50px 80px 50px; 
     padding: 0; 
-    width: 70%; 
+    width: 70%;
+    -webkit-user-select: none;
   }
 
 /* Slider Style */

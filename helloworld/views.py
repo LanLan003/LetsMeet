@@ -84,6 +84,45 @@ def resultpage(request):
 	scaleRange = range(maxNum)
 	reply = len(results)
 
-
 	#return HttpResponse(options)
-	return render(request, 'result_try.html',locals())
+	return render(request, 'result.html',locals())
+	
+"""
+	if max(counting) > 9:
+		maxNum = max(counting)
+		scaleRange = range(maxNum)
+		reply = len(results)
+
+		counting_trans = []
+		for i in counting:
+			t = i/maxNum
+			if t > 0.9:
+				counting_trans.append(9)
+			elif t > 0.8:
+				counting_trans.append(8)
+			elif t > 0.7:
+				counting_trans.append(7)
+			elif t > 0.6:
+				counting_trans.append(6)
+			elif t > 0.5:
+				counting_trans.append(5)
+			elif t > 0.4:
+				counting_trans.append(4)
+			elif t > 0.3:
+				counting_trans.append(3)
+			elif t > 0.2:
+				counting_trans.append(2)
+			elif t > 0.1:
+				counting_trans.append(1)
+			else:
+				counting_trans.append(0)
+
+		return render(request, 'result.html',locals())
+	else:
+		maxNum = max(counting)
+		scaleRange = range(maxNum)
+		reply = len(results)
+		return render(request, 'result.html',locals())
+"""
+
+	
