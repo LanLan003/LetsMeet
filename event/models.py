@@ -7,7 +7,7 @@ from django.db import models
 class Event(models.Model):
 	eventName = models.CharField(max_length=64, blank=False)
 	owner = models.CharField(max_length=32, blank=False)
-	dayChosen = models.CharField(max_length=64, blank=False)
+	dayChosen = models.CharField(max_length=1024, blank=False)
 	timeChosen = models.CharField(max_length=256, blank=False)
 	randUrl = models.CharField(max_length=20, blank=False, primary_key = True)
 
@@ -16,7 +16,7 @@ class Event(models.Model):
 
 class Response(models.Model):
 	yourName = models.CharField(max_length=32, blank=False)
-	freeTime = models.CharField(max_length=1024, blank=False)
+	freeTime = models.CharField(max_length=2048, blank=False)
 	event = models.ForeignKey('Event', on_delete=models.CASCADE)
 
 	def __str__(self):

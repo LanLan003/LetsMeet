@@ -1,21 +1,77 @@
-{% load  staticfiles %}
+{% load  static %}
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link href="{% static 'css/style.css' %}" rel="stylesheet" type="text/css" />
+  <meta charset="utf-8">
+  {% block extra_head %}{% endblock %}
 </head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
 
+body { 
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.header {
+  overflow: hidden;
+  margin: 0px 2px 30px 2px;
+  background-color: rgba(0,0,0,0.4);
+  padding: 20px 20px;
+}
+
+.header a {
+  float: left;
+  color: white;
+  text-align: center;
+  padding: 12px;
+  text-decoration: none;
+  font-size: 18px; 
+  line-height: 25px;
+  border-radius: 4px;
+}
+
+.header a.logo {
+  font-size: 25px;
+  font-weight: bold;
+}
+
+
+.header a.active {
+  background-color:  #F07260;
+  color: white;
+}
+
+.header-right {
+  float: right;
+}
+
+@media screen and (max-width: 500px) {
+  .header a {
+    float: none;
+    display: block;
+    text-align: left;
+  }
+  
+  .header-right {
+    float: none;
+  }
+}
+</style>
 <body>
-    <div class="header">
-        <h1>Let's meet !</h1>
-    </div>
-    <div class="content container">
-        <div class="row">
-            <div class="col-md-8">
-            {% block content %}
-            {% endblock content %}
-            </div>
-        </div>
-    </div>
+<div class="header">
+  <img src="/static/images/calendar.png" width="55" height="55" align="left"/>
+  <a href="#default" class="logo">Let's Meet !</a>
+  <div class="header-right">
+    {% if user.is_authenticated %}
+    <a> Hi {{ user.username }}! </a>
+    <a class="active" href="{% url 'logout' %}">logout</a>
+  
+  {% endif %}
+  </div>
+</div>
+
+
+    {% block content %}
+    {% endblock %}
+
 </body>
+</html>

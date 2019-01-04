@@ -28,7 +28,10 @@
         {% for h in timeChosen %}
         {% for d in dayChosen %}
           var cn = {{ counting }}
-          $( "#selectable" ).append("<li id='{{ d }}_{{ h }}' class='cell c" + cn[c] + "'>{{ d }}<br>{{ h }}</li>");
+          $( "#selectable" ).append("<li id='{{ d }}_{{ h }}' class='cell c" + cn[c] + "'>{{ d | slice:'6:' }}<br><span class='date' style='font-size: 18px;'>{{ d | slice:':2' }}/{{ d | slice:'3:5' }}</span><br>{{ h }}</li>");
+          if ( "{{ d | slice:'6:' }}" == "{{ lastDay | slice:'6:'}}" ) {
+            $( "#selectable" ).append("<p class='space' style='display: inline-block; color: transparent;'>&nbsp&nbsp</p>");
+          };
           c++;
         {% endfor %}
           $( "#selectable" ).append("<br>");
@@ -70,7 +73,7 @@
               //$( "#showAvailable" ).css('background','white');
               //$( "#showAvailable" ).children().css('color','#666666');
               var theDate = $( evt.target ).attr('id')
-              theDate = theDate.substr(0,3) + "  " + theDate.substr(4,5)
+              theDate = theDate.substr(6,3) + "  " + theDate.substr(0,2) + "/" + theDate.substr(3,2) + "  " + theDate.substr(10,5)
               $( "#day" ).text(theDate);
               //alert($( evt.target ).attr('id'));
               {% for a in ao %}

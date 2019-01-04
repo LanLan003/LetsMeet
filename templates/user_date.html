@@ -17,18 +17,24 @@
   {% block content %}
     <span id="event" class="textContent">{{ eventName }}</span>
 
+
     <form action="." method="POST">
     {% csrf_token %}
       <input type="text" name="yourName" placeholder="Your Name"/>
       <input type="submit" value="Submit"/>
       
       <ol id="selectable">
+      <script type="text/javascript">
       {% for h in timeChosen%}
       {% for d in dayChosen%}
-        <li id="{{ d }}_{{ h }}">{{ d }}<br>{{ h }}</li>
+        $( "#selectable" ).append("<li id='{{ d }}_{{ h }}'>{{ d | slice:'6:' }}<br><span class='date' style='font-size: 18px;'>{{ d | slice:':2' }}/{{ d | slice:'3:5' }}</span><br>{{ h }}</li>");
+        if ( "{{ d | slice:'6:' }}" == "{{ lastDay | slice:'6:'}}" ) {
+          $( "#selectable" ).append("<p class='space' style='display: inline-block; color: transparent;'>&nbsp&nbsp</p>");
+        };
       {% endfor %}
-        <br>
+        $( "#selectable" ).append("<br>");
       {% endfor %}
+      </script>
       </ol>
 
       <input type="hidden" id="freeTime" name="freeTime" value="">
@@ -43,6 +49,19 @@
     $( "#selectable" ).bind("mousedown", function(evt) {
     evt.metaKey = true;
     }).selectable({
+      selecting: function() {
+        $( ".ui-selectee" , this ).each(function() {
+          $( this ).children( ".date" ).css('background', $( this ).css('background'));
+          $( this ).children( ".date" ).css('color', $( this ).css('color'));
+          $( this ).filter(".space").css('background', '#F0F0F0');
+        });
+      },
+      unselecting: function() {
+        $( ".ui-selectee" , this ).each(function() {
+          $( this ).children( ".date" ).css('background', $( this ).css('background'));
+          $( this ).children( ".date" ).css('color', $( this ).css('color'));
+        });
+      },
       stop: function() {
         var freeTime = [];
         $( ".ui-selected" , this ).each(function() {
@@ -50,10 +69,17 @@
           freeTime.push( id );
           $( "#freeTime" )[0].value = freeTime;
         });
+        $( ".ui-selectee" , this ).each(function() {
+          $( this ).children( ".date" ).css('background', $( this ).css('background'));
+          $( this ).children( ".date" ).css('color', $( this ).css('color'));
+        });
       }
     });
   } );
 
+    {% if error == True %}
+    alert("使用者名稱重複囉！");
+    {% endif %}
   </script>
 {% endblock %}
 </body>

@@ -9,7 +9,8 @@
     background: #FF6666; 
     color: #262626; 
     border: dashed; 
-    border-width: 1px; 
+    border-width: 1px;
+    border-radius: 6px; 
     text-align: center;
     cursor: default;
     border-color: #262626;
@@ -19,8 +20,9 @@
   #selectable { 
     list-style-type: none; 
     margin: 20px 50px 80px 50px; 
-    padding: 0; 
-    width: 70%;
+    padding: 0;
+    width: 100%;
+    overflow-x: scroll;
     -webkit-user-select: none; 
   }
 
@@ -41,4 +43,19 @@
 #scale .scaleRange {
     height: 5px;
     -webkit-user-select: none;
+}
+
+#showAvailable {
+    position: fixed;
+    top: 20%;
+    left: 75%;
+    padding: 5px;
+    color: transparent;
+    cursor: default;
+    border: dashed; 
+    border-width: 3px;
+    background: #FFFFFF;
+    color: #A9A9A9; 
+    -webkit-user-select: none; 
+    box-shadow: 10px 10px 50px grey;
 }

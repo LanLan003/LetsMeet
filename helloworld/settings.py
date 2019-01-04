@@ -76,12 +76,12 @@ WSGI_APPLICATION = 'helloworld.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'letsMeet',
-        'USER': 'Lanlan',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'meet',
+        'USER': 'postgres',
+        'PASSWORD': 'havefaith5!',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 #import dj_database_url

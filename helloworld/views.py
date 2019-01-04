@@ -1,9 +1,64 @@
 from django.shortcuts import render,redirect   # 加入 redirect 套件
 from django.contrib.auth import authenticate
+from django.contrib import messages
 from django.contrib import auth
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from event.models import Event, Response
+
+def index(request):
+	return render(request, 'welnew.html',locals())
+
+def login(request):
+	if request.user.is_authenticated:
+		return render(request, 'home.html',locals())
+
+	if request.method == 'POST':
+		username = request.POST.get('name')
+		password = request.POST.get('pass')
+		user = auth.authenticate(username=username, password=password)
+		auth.login(request,user)
+		if user is not None:
+			if user.is_active:
+				auth.login(request,user)
+				events = Event.objects.filter(owner=user.username)
+				eventName = []
+				for i in range(len(events)):
+					name = events[i].eventName
+					eventName.append(name)
+			else:
+				return HttpResponse('尚未登入')
+		else:
+			return HttpResponse('登入失敗!')
+	return render(request, 'home.html', locals())
+
+def logout(request):
+	auth.logout(request)
+	return render(request, 'welnew.html',locals())
+
+def signup(request):
+	if request.method == 'POST':
+		username = request.POST.get('regname')
+		password = request.POST.get('regpass')
+		email = ""
+		
+		# --- 不會顯示登入error! --- #
+		try:
+			user = User.objects.get(username=username)
+		except:
+			#user = None
+			#if user is None:
+			user = User.objects.create_user(username, email, password)
+			user.save()
+			#messages.add_message(request, messages.INFO, '註冊成功')
+			messages.info(request, '註冊成功')
+			#print('註冊成功')
+		else:
+			#messages.add_message(request, messages.INFO, '此使用者已經有人使用')
+			messages.info(request, '此使用者已經有人使用')
+			#print("此使用者已經有人使用")              
+		
+		return redirect('/')
 
 
 def createEvent(request):
@@ -30,16 +85,35 @@ def newEvent(request):
 
 	dC = event.dayChosen
 	dayChosen = dC.split(",",dC.count(","))
+	while "" in dayChosen:
+		dayChosen.remove("")
 	tC = event.timeChosen
 	timeChosen = tC.split(",",tC.count(","))
+	while "" in timeChosen:
+		timeChosen.remove("")
 
+	error = False # 完成使用者名稱不重複！
 	if request.method == 'POST':
 		yourName = request.POST.get('yourName')
-		freeTime = request.POST.get('freeTime')
-		Response.objects.create(yourName=yourName, freeTime=freeTime, event=event)
-		return redirect(current+'result')
-	return render(request, 'user.html',locals())
+		try:
+			Response.objects.get(yourName=yourName, event=event)
+			error = True
+		except:
+			freeTime = request.POST.get('freeTime')
+			Response.objects.create(yourName=yourName, freeTime=freeTime, event=event)
+			return redirect(current+'result')
+	lastDay = dayChosen[len(dayChosen)-1]
 
+	ifDate = False
+	num = "0123456789"
+	for i in num:
+		if i in dC:
+			ifDate = True
+
+	if ifDate == True:
+		return render(request, 'user_date.html',locals())
+	else:
+		return render(request, 'user.html',locals())
 
 
 def resultpage(request):
@@ -51,78 +125,83 @@ def resultpage(request):
 
 	dC = event.dayChosen
 	dayChosen = dC.split(",",dC.count(","))
+	while "" in dayChosen:
+		dayChosen.remove("")
 	tC = event.timeChosen
 	timeChosen = tC.split(",",tC.count(","))
+	while "" in timeChosen:
+		timeChosen.remove("")
 	
 	options = []
 	for h in timeChosen:
 		for d in dayChosen:
-			options.append(d + " : " + h)
+			options.append(d + "_" + h)
 	lo = len(options)
 
 	results = Response.objects.filter(event=event)
 	
 	fT = []
+	yourName = []
+	freeTime = []
 	for i in range(len(results)):
-		yourName = results[i].yourName
+		yourName.append(results[i].yourName)
 		f = results[i].freeTime
-		freeTime = f.split(",",f.count(","))
-		fT.append({yourName:freeTime})
+		freeTime.extend(f.split(",",f.count(",")))
+		fT.append({results[i].yourName:f.split(",",f.count(","))})
 		#fD.extend(f)
 
-	# 計算星期幾出現幾次：
-	times = []
-	for t in fT:
-		a = list(t.values())
-		times.extend(a[0])
+
+	# 計算各個時段出現幾次：
+
+	#times = []
+	#for t in fT:
+	#	a = list(t.values())
+	#	times.extend(a[0])
 	
 	counting = []
-	for i in options:
-		counting.append(times.count(i))
+	for o in options:
+		counting.append(freeTime.count(o))
 	
 	maxNum = max(counting)
 	scaleRange = range(maxNum)
 	reply = len(results)
 
-	#return HttpResponse(options)
-	return render(request, 'result.html',locals())
 	
-"""
-	if max(counting) > 9:
-		maxNum = max(counting)
-		scaleRange = range(maxNum)
-		reply = len(results)
+	# 找出每個時段的人:
 
-		counting_trans = []
-		for i in counting:
-			t = i/maxNum
-			if t > 0.9:
-				counting_trans.append(9)
-			elif t > 0.8:
-				counting_trans.append(8)
-			elif t > 0.7:
-				counting_trans.append(7)
-			elif t > 0.6:
-				counting_trans.append(6)
-			elif t > 0.5:
-				counting_trans.append(5)
-			elif t > 0.4:
-				counting_trans.append(4)
-			elif t > 0.3:
-				counting_trans.append(3)
-			elif t > 0.2:
-				counting_trans.append(2)
-			elif t > 0.1:
-				counting_trans.append(1)
+	ao = []
+	do = []
+
+	for o in options:
+		p_in_o = []
+		p_notin_o = []
+
+		for p in yourName:
+			r = Response.objects.get(yourName=p, event=event)  # 記得刪掉重複的名字！
+			f = r.freeTime
+			free = f.split(",",f.count(","))
+
+			if o in free:
+				p_in_o.append(p)
 			else:
-				counting_trans.append(0)
+				p_notin_o.append(p)
 
-		return render(request, 'result.html',locals())
+			
+			#for j in range(len(r)):
+				#f = r[j].freeTime
+				
+		ao.append({o:p_in_o})
+		do.append({o:p_notin_o})	
+
+	lastDay = dayChosen[len(dayChosen)-1]
+
+	ifDate = False
+	num = "0123456789"
+	for i in num:
+		if i in dC:
+			ifDate = True
+
+	if ifDate == True:
+		return render(request, 'result_date.html',locals())
 	else:
-		maxNum = max(counting)
-		scaleRange = range(maxNum)
-		reply = len(results)
 		return render(request, 'result.html',locals())
-"""
-
-	

@@ -19,7 +19,12 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.createEvent),
+    path('', views.index),
+    #path('home/', views.home, name='home'),
+    path('c/', views.createEvent, name='createEvent'),
     re_path('user/[-\w]+/$', views.newEvent),  #
-    re_path('user/[-\w]+/result', views.resultpage, name='resulturl')  #
+    re_path('user/[-\w]+/result', views.resultpage, name='resulturl'),
+    path('signup/', views.signup),
+    path('login/', views.login),
+    path('logout/', views.logout, name='logout'),
 ]

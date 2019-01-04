@@ -9,7 +9,8 @@
     background: #FF6666; 
     color: #262626; 
     border: dashed; 
-    border-width: 1px; 
+    border-width: 1px;
+    border-radius: 6px; 
     text-align: center;
     cursor: pointer;
     /* line-height: 120px; */
@@ -28,6 +29,7 @@
     list-style-type: none; 
     margin: 20px 50px 80px 50px; 
     padding: 0; 
-    width: 70%;
+    width: 100%;
+    overflow-x: scroll;
     -webkit-user-select: none; 
   }
