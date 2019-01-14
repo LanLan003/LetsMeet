@@ -54,6 +54,10 @@
     });
   } );
 
+  {% if error == True %}
+  alert("使用者名稱重複囉！");
+  {% endif %}
+
   </script>
 {% endblock %}
 </body>

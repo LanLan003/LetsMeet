@@ -2,35 +2,39 @@ from django.shortcuts import render,redirect   # 加入 redirect 套件
 from django.contrib.auth import authenticate
 from django.contrib import messages
 from django.contrib import auth
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User
 from event.models import Event, Response
 
 def index(request):
+	if request.user.is_authenticated: 
+		return HttpResponseRedirect('/login/')
 	return render(request, 'welnew.html',locals())
+
 
 def login(request):
 	if request.user.is_authenticated:
+		#user = auth.authenticate(username=username, password=password)
+		user = request.user
+		events = Event.objects.filter(owner=user.username)
 		return render(request, 'home.html',locals())
 
+	error = False
 	if request.method == 'POST':
 		username = request.POST.get('name')
 		password = request.POST.get('pass')
 		user = auth.authenticate(username=username, password=password)
-		auth.login(request,user)
 		if user is not None:
-			if user.is_active:
+			#if user.is_active:
 				auth.login(request,user)
 				events = Event.objects.filter(owner=user.username)
-				eventName = []
-				for i in range(len(events)):
-					name = events[i].eventName
-					eventName.append(name)
-			else:
-				return HttpResponse('尚未登入')
+				return render(request, 'home.html', locals())
+			#else:
+				#return HttpResponse('尚未登入')
 		else:
+			error = True
 			return HttpResponse('登入失敗!')
-	return render(request, 'home.html', locals())
+	#return render(request, 'home.html', locals())
 
 def logout(request):
 	auth.logout(request)

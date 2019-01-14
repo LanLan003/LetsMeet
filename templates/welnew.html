@@ -127,20 +127,27 @@
         // 防呆 //
         $( function() {
             $( "#login" ).bind("mousedown", function(evt) {
-                if ($( "input[name='regname']" )[0].value == "") {
-                    alert("請輸入使用者名稱！");
-                } else if ($( "input[name='regpass']" )[0].value == "") {
-                    alert("請輸入密碼！");
+                if ($( "input[name='name']" )[0].value == "") {
+                    alert("請輸入使用者名稱login！");
+                } else if ($( "input[name='pass']" )[0].value == "") {
+                    alert("請輸入密碼login！");
                 };
             });
             $( "#register" ).bind("mousedown", function(evt) {
                 if ($( "input[name='regname']" )[0].value == "") {
-                    alert("請輸入使用者名稱！");
+                    alert("請輸入使用者名稱reg！");
                 } else if ($( "input[name='regpass']" )[0].value == "") {
-                    alert("請輸入密碼！");
+                    alert("請輸入密碼reg！");
                 };
             });
+            //$( document ).on("keydown keypress keyup", function(evt) {
+            //    if ( evt.which == 13 ) {
+            //        alert("hi");
+            //        $( "#loginForm #signinForm" ).submit( function() {return false;} )
+            //    };
+            //});
         } );
+
 
         // 系統訊息 //
         //{% if messages %}
@@ -148,6 +155,10 @@
         //    alert({{ message.info }});
         //{% endfor %}
         //{% endif %}
+
+         {% if error == True %}
+            alert("登入失敗！");
+        {% endif %}
 
     </script>
 </head>
@@ -158,7 +169,7 @@
 
             <div class="title">LOGIN</div>
 
-            <form action="/login/" method="POST">
+            <form action="/login/" method="POST" onkeypress="if (event.keyCode == 13) {return false;}">
                 {% csrf_token %}
                 <div class="input">
                     <label for="name">Username</label>
@@ -174,7 +185,7 @@
 
                 <div class="button login">
                     <button id="login"type="submit"><span>GO</span></button>
-                    <!--- 這邊按enter會出error! --->
+                    <!--- 這邊不按enter會出error! --->
                 </div>
             </form>
 
@@ -186,7 +197,7 @@
 
             <div class="title">REGISTER</div>
 
-            <form action="/signup/" method="POST">
+            <form action="/signup/" method="POST" onkeypress="if (event.keyCode == 13) {return false;}">
                 {% csrf_token %}
                 <div class="input">
                     <label for="regname">Username</label>

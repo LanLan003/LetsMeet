@@ -201,10 +201,15 @@ div.relative {
 <div class="demo">
   <div class="demo__title">My events</div>
   <div class="demo__content">
-    {% for event in eventName %}
+    {% for e in events %}
     <label class="switcher">
       <input type="checkbox"/>
-      <div class="switcher__indicator"></div><span>{{ event }}</span>
+      <div class="switcher__indicator"></div><a href="{{ e.randUrl }}">{{ e.eventName }}</a>
+      <script type="text/javascript">
+        if ( $( "input" ).attr( "checked" ) ){
+          alert("hi!")
+        };
+      </script>
     </label><br/><br/>
     {% endfor %}
     
